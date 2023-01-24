@@ -23,7 +23,7 @@ public class PurgefilesApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Welcome to");
+		System.out.println("Welcome to ");
 		PurgeTask.run();
 		
 	}
@@ -41,6 +41,7 @@ public class PurgefilesApplication implements CommandLineRunner{
 	@AfterTask
 	public void onTaskEnd(TaskExecution taskExecution) {
 		System.out.println("Task:"+taskExecution.getTaskName()+" terminou...");
+
 		
 	}
 

@@ -7,17 +7,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import com.task.model.FoldersDTO;
+import com.task.model.Folders;
 
 @Configuration
 public class PurgeTaskConfig {
 
     @Bean
-    public ItemReader<FoldersDTO> itemReader() {
+    public ItemReader<Folders> itemReader() {
         Jaxb2Marshaller foldersMarshaller = new Jaxb2Marshaller();
-        foldersMarshaller.setClassesToBeBound(FoldersDTO.class);
+        foldersMarshaller.setClassesToBeBound(Folders.class);
 
-        return new StaxEventItemReaderBuilder<FoldersDTO>()
+        return new StaxEventItemReaderBuilder<Folders>()
                 .name("configReader")
                 .resource(new ClassPathResource("../resources/config.xml"))
                 .addFragmentRootElements("folders")
