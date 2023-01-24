@@ -24,6 +24,7 @@ public class PurgefilesApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("Welcome to");
+		PurgeTask.run();
 		
 	}
 
