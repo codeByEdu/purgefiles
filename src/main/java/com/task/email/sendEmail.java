@@ -66,14 +66,14 @@ public class sendEmail {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(this.dest));
         message.setSubject("Task Purge Files");
 
-        String msg = body;
+        String msg = body+"<br>";
 
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
         mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
-        String msgStyled = "This is my <b style='color:red;'>bold-red email</b> using JavaMailer";
+        //String msgStyled = "This is my <b style='color:red;'>bold-red email</b> using JavaMailer";
         MimeBodyPart mimeBodyPartWithStyledText = new MimeBodyPart();
-        mimeBodyPartWithStyledText.setContent(msgStyled, "text/html; charset=utf-8");
+      //  mimeBodyPartWithStyledText.setContent(msgStyled, "text/html; charset=utf-8");
 
         //MimeBodyPart attachmentBodyPart = new MimeBodyPart();
 
