@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.task.email.sendEmail;
 import com.task.exception.ArquivoForaDasExtemsoesException;
 import com.task.exception.ArquivoForaDosDiasException;
 import com.task.model.Folder;
@@ -34,28 +35,34 @@ public class PurgeTask {
     private static final Logger logger = LoggerFactory.getLogger(PurgeTask.class);
 
     public static void run() {
+        StringBuilder email = new StringBuilder();
         try {
             Folders folders = configuraXML();
             for (Folder folder : folders.getFolder()) {
                 File pasta = new File(folder.getPath());
                 File[] arquivos = pasta.listFiles();
                 for (File arquivo : arquivos) {
-                    validaArquivos(folder, arquivo);
+                    validaArquivos(folder, arquivo, email);
                 }
-
+                enviaEmail(folder.getEmail(), email);
             }
+            
         } catch (Exception e) {
             logger.error("Erro inesperado.");
             e.printStackTrace();
         }
     }
 
-    private static void validaArquivos(Folder folder, File arquivo) throws URISyntaxException, IOException {
+    private static void enviaEmail(String email, StringBuilder body) throws Exception {
+        new sendEmail("smtp.mailtrap.io", 2525, "f88c36659581bb", "0a178c8d1cc6eb", body, email).sendMail();
+    }
+
+    private static void validaArquivos(Folder folder, File arquivo, StringBuilder email) throws URISyntaxException, IOException {
         logger.info("Validando arquivo:{} ", arquivo.getName());
         try {
             validaDiasParaExcluir(folder, arquivo);
             validaExtensaoArquivo(folder, arquivo);
-            excluiArquivo(folder, arquivo);
+            excluiArquivo(folder, arquivo, email);
         } catch (ArquivoForaDosDiasException e) {
             logger.info("arquivo fora dos dias.");
         } catch (ArquivoForaDasExtemsoesException e) {
@@ -63,13 +70,18 @@ public class PurgeTask {
         }
     }
 
-    private static void excluiArquivo(Folder folder, File arquivo) throws URISyntaxException, IOException {
+    private static void excluiArquivo(Folder folder, File arquivo, StringBuilder email) throws URISyntaxException, IOException {
         logger.info("Excluindo arquivo: {}", arquivo.getName());
         arquivo.delete();
         if(!arquivo.exists()){
             String nome= arquivo.getName();
             geraLogDeArquivos(nome,folder.getName(), folder.getPath());
+            geraEmail(arquivo.getName(), folder.getPath(), email);
         }
+    }
+
+    private static void geraEmail( String arquivoName, String path, StringBuilder email) {
+        email.append("Arquivo removido: "+ path + "/"+ arquivoName +"\r\n")  ;
     }
 
     private static void geraLogDeArquivos(String nome, String name, String path) throws URISyntaxException, IOException {
